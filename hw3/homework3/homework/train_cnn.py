@@ -14,7 +14,7 @@ device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cp
 
 def train(args):
     from os import path
-    model = CNNClassifier()
+    model = CNNClassifier().toDevice()
     loss_function = nn.CrossEntropyLoss()
     #optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
     optimizer = optim.Adam(model.parameters(), lr=0.001)
@@ -23,7 +23,9 @@ def train(args):
     for epoch in range(15):
         model.train()
         running_loss = 0.0
-        for index, (inputs, label) in enumerate(data_loader):
+        for index, (inputs, labels) in enumerate(data_loader):
+            inputs = inputs.to(device)
+            labels = labels.to(device)
             optimizer.zero_grad()
             outputs = model(inputs)
             loss = loss_function(outputs, label)
@@ -34,7 +36,7 @@ def train(args):
         model.eval()
         confusion = ConfusionMatrix(6)
         for img, label in load_data(VALID_PATH):
-            confusion.add(model(img.to(device)).argmax(1).cpu(), label)
+            confusion.add(model(img.to(device)).argmax(1).cpu(), label.to(device)
         print("global accuracy: ", confusion.global_accuracy)
         if validation_accuracy > confusion.global_accuracy and epoch > EARLY_STOP:
             exit()
