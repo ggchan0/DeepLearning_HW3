@@ -28,7 +28,7 @@ def train(args):
             labels = labels.to(device)
             optimizer.zero_grad()
             outputs = model(inputs)
-            loss = loss_function(outputs, label)
+            loss = loss_function(outputs, labels)
             loss.backward()
             optimizer.step()
             running_loss += loss.item()
