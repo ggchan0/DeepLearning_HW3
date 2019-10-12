@@ -17,7 +17,7 @@ device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cp
 
 def train(args):
     from os import path
-    model = FCN()
+    model = FCN().to(device)
     train_logger, valid_logger = None, None
 
     validation_accuracy = 0
@@ -31,15 +31,17 @@ def train(args):
         model.train()
         running_loss = 0.0
 
-        for index, (inputs, label) in enumerate(data_loader):
+        for index, (inputs, labels) in enumerate(data_loader):
+            inputs = inputs.to(device)
+            labels = inputs.to(device)
+
             print("input shape", inputs.shape)
-            print("label shape", label.shape)
-            print(label[0])
+            print("label shape", labels.shape)
             image_to_tensor = dense_transforms.ToTensor()
 
             optimizer.zero_grad()
             outputs = model(inputs)
-            loss = loss_function(outputs, label)
+            loss = loss_function(outputs, labels)
             loss.backward()
             optimizer.step()
             running_loss += loss.item()

@@ -36,7 +36,7 @@ def train(args):
         model.eval()
         confusion = ConfusionMatrix(6)
         for img, label in load_data(VALID_PATH):
-            confusion.add(model(img.to(device)).argmax(1).cpu(), label.to(device))
+            confusion.add(model(img.to(device)).argmax(1).cpu(), label)
         print("global accuracy: ", confusion.global_accuracy)
         if validation_accuracy > confusion.global_accuracy and epoch > EARLY_STOP:
             exit()
