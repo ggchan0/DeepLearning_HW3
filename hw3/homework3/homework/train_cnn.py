@@ -8,7 +8,7 @@ import torch.optim as optim
 
 TRAIN_PATH = "data/train"
 VALID_PATH = "data/valid"
-EARLY_STOP = 10
+EARLY_STOP = 15
 
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
@@ -20,7 +20,7 @@ def train(args):
     optimizer = optim.Adam(model.parameters(), lr=0.001)
     data_loader = load_data(TRAIN_PATH, batch_size=200)
     validation_accuracy = 0
-    for epoch in range(15):
+    for epoch in range(20):
         model.train()
         running_loss = 0.0
         for index, (inputs, labels) in enumerate(data_loader):
