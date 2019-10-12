@@ -13,6 +13,8 @@ TRAIN_PATH = "dense_data/train"
 VALID_PATH = "dense_data/valid"
 EARLY_STOP = 10
 
+device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+
 def train(args):
     from os import path
     model = FCN()
