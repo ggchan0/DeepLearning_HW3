@@ -6,16 +6,16 @@ import torch.nn as nn
 class CNNClassifier(nn.Module):
     def __init__(self):
         super(CNNClassifier, self).__init__()
-        self.conv1 = nn.Conv2d(3, 36, 3, padding=1)
-        self.conv1_1 = nn.Conv2d(36, 36, 3, padding=1)
-        self.conv2 = nn.Conv2d(36, 24, 3, padding=1)
-        self.conv2_1 = nn.Conv2d(24, 24, 3, padding=1)
+        self.conv1 = nn.Conv2d(3, 128, 3, padding=1)
+        self.conv1_1 = nn.Conv2d(128, 64, 3, padding=1)
+        self.conv2 = nn.Conv2d(64, 32, 3, padding=1)
+        self.conv2_1 = nn.Conv2d(32, 16, 3, padding=1)
         #self.conv3 = nn.Conv2d(24, 12, 3, padding=1)
         #self.conv3_1 = nn.Conv2d(12, 12, 3, padding=1)
         self.pool = nn.MaxPool2d(2, 2)
-        self.linear1 = nn.Linear(24 * 16 * 16, 256)
-        self.linear2 = nn.Linear(256, 32)
-        self.linear3 = nn.Linear(32, 6)
+        self.linear1 = nn.Linear(16 * 16 * 16, 1024)
+        self.linear2 = nn.Linear(1024, 256)
+        self.linear3 = nn.Linear(256, 6)
         self.flag = True
 
     def forward(self, x):
@@ -30,7 +30,7 @@ class CNNClassifier(nn.Module):
         #x = self.conv3(F.relu(x)) # 24 x 16 x 16
         #x = self.conv3_1(F.relu(x)) # 12 x 16 x 16
         #x = self.pool(F.relu(x)) # 12 x 8 x 8
-        x = x.view(-1, 24 * 16 * 16)
+        x = x.view(-1, 16 * 16 * 16)
         x = self.linear1(F.relu(x))
         x = self.linear2(F.relu(x))
         x = self.linear3(F.relu(x))
