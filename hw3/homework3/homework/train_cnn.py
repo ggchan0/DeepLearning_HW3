@@ -23,7 +23,7 @@ def train(args):
         optimizer = optim.Adam(model.parameters(), lr=0.001)
     data_loader = load_data(TRAIN_PATH, batch_size=args.batch_size)
     validation_accuracy = 0
-    for epoch in args.epochs:
+    for epoch in range(0, args.epochs):
         model.train()
         running_loss = 0.0
         for index, (inputs, labels) in enumerate(data_loader):
