@@ -46,7 +46,9 @@ class CNNClassifier(nn.Module):
         L.append(torch.nn.MaxPool2d(kernel_size = 2))
         '''
 
-        self.classifier = torch.nn.Linear(128 * 8 * 8, 6)
+        self.fc1 = torch.nn.Linear(64 * 16 * 16, 1024)
+        self.fc2 = torch.nn.Linear(1024, 6)
+
 
     def forward(self, x):
         x = self.conv1(x)
@@ -63,15 +65,10 @@ class CNNClassifier(nn.Module):
 
         x = self.pool(x)
 
-        x = self.conv3(F.relu(x))
-        x = self.batch3(x)
-        x = self.conv3_0(F.relu(x))
-        x = self.batch3(x)
-
-        x = self.pool(x)
-
-        x = x.view(-1, 128 * 8 * 8)
-        return self.classifier(F.relu(x))
+        x = x.view(-1, 64 * 16 * 16)
+        x = self.fc1(F.relu(x))
+        x = self.fc2(F.relu(x))
+        return x
 
 class FCN(torch.nn.Module):
     def __init__(self):
