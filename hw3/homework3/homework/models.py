@@ -45,6 +45,7 @@ class CNNClassifier(nn.Module):
         self.conv3 = nn.Conv2d(64, 128, 3, padding=1)
         self.conv3_1 = nn.Conv2d(128, 128, 3, padding=1)
         self.batch_3 = nn.BatchNorm2d(num_features = 128)
+        self.pool = nn.MaxPool2d(2, 2)
         self.linear3 = nn.Linear(128, 6)
 
     def forward(self, x):
