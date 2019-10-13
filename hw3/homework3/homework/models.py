@@ -40,7 +40,7 @@ class CNNClassifier(nn.Module):
         L.append(torch.nn.ReLU())
 
         self.network = torch.nn.Sequential(*L)
-        self.classifier = torch.nn.Linear(128 * 16 * 16)
+        self.classifier = torch.nn.Linear(128 * 16 * 16, 6)
 
     def forward(self, x):
         x = self.classifier(x)
