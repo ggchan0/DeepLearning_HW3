@@ -19,9 +19,9 @@ class CNNClassifier(nn.Module):
         self.conv3_0 = torch.nn.Conv2d(32, 32, 3, padding = 1)
         self.batch3 = torch.nn.BatchNorm2d(num_features = 32)
 
-        self.conv3 = torch.nn.Conv2d(32, 16, 3, padding = 1)
-        self.conv3_0 = torch.nn.Conv2d(16, 16, 3, padding = 1)
-        self.batch3 = torch.nn.BatchNorm2d(num_features = 16)
+        self.conv4 = torch.nn.Conv2d(32, 16, 3, padding = 1)
+        self.conv4_0 = torch.nn.Conv2d(16, 16, 3, padding = 1)
+        self.batch4 = torch.nn.BatchNorm2d(num_features = 16)
 
         self.pool = torch.nn.MaxPool2d(kernel_size = 2)
 
@@ -35,26 +35,31 @@ class CNNClassifier(nn.Module):
         x = self.batch1(x)
         x = self.conv1_0(F.relu(x))
         x = self.batch1(x)
+        print(x.shape)
 
         x = self.conv2(F.relu(x))
         x = self.batch2(x)
         x = self.conv2_0(F.relu(x))
         x = self.batch2(x)
 
+        print(x.shape)
         #64 x 32 x 32
         x = self.pool(x)
 
+        print(x.shape)
         x = self.conv3(F.relu(x))
         x = self.batch3(x)
         x = self.conv3_0(F.relu(x))
         x = self.batch3(x)
 
+        print(x.shape)
         x = self.conv4(F.relu(x))
         x = self.batch4(x)
         x = self.conv4_0(F.relu(x))
         x = self.batch4(x)
 
         #16 x 16 x 16
+        print(x.shape)
         x = self.pool(x)
 
         x = x.view(-1, 16 * 16 * 16)
