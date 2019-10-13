@@ -31,7 +31,6 @@ class CNNClassifier(nn.Module):
         x = self.linear2(F.relu(x))
         x = self.linear3(F.relu(x))
         return x
-C
 
 class FCN(torch.nn.Module):
     def __init__(self):
