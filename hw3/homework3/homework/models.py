@@ -19,8 +19,8 @@ class CNNClassifier(nn.Module):
         self.flag = True
 
     def forward(self, x):
-        x = self.conv0(x) # 48 x 64 x 64
-        x = self.conv0_1(F.relu(x)) # 48 x 64 x 64
+        #x = self.conv0(x) # 48 x 64 x 64
+        #x = self.conv0_1(F.relu(x)) # 48 x 64 x 64
         x = self.conv1(F.relu(x)) # 36 x 64 x 64
         x = self.conv1_1(F.relu(x)) # 36 x 64 x 64
         x = self.pool(F.relu(x)) # 36 x 32 x 32
