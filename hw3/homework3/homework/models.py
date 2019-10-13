@@ -11,33 +11,33 @@ class CNNClassifier(nn.Module):
         #3 x 64 x 64
         L.append(torch.nn.Conv2d(3, 32, 3, padding = 1))
         L.append(torch.nn.BatchNorm2d(num_features = 32))
-        L.append(torch.nn.Relu())
+        L.append(torch.nn.ReLU())
 
         L.append(torch.nn.Conv2d(32, 32, 3, padding = 1))
         L.append(torch.nn.BatchNorm2d(num_features = 32))
-        L.append(torch.nn.Relu())
+        L.append(torch.nn.ReLU())
 
         L.append(torch.nn.MaxPool2d(kernel_size = 2))
 
         #64 x 32 x 32
         L.append(torch.nn.Conv2d(32, 64, 3, padding = 1))
         L.append(torch.nn.BatchNorm2d(num_features = 64))
-        L.append(torch.nn.Relu())
+        L.append(torch.nn.ReLU())
 
         L.append(torch.nn.Conv2d(64, 64, 3, padding = 1))
         L.append(torch.nn.BatchNorm2d(num_features = 64))
-        L.append(torch.nn.Relu())
+        L.append(torch.nn.ReLU())
 
         L.append(torch.nn.MaxPool2d(kernel_size = 2))
 
         #128 x 16 x 16
         L.append(torch.nn.Conv2d(64, 128, 3, padding = 1))
         L.append(torch.nn.BatchNorm2d(num_features = 128))
-        L.append(torch.nn.Relu())
+        L.append(torch.nn.ReLU())
 
         L.append(torch.nn.Conv2d(128, 128, 3, padding = 1))
         L.append(torch.nn.BatchNorm2d(num_features = 128))
-        L.append(torch.nn.Relu())
+        L.append(torch.nn.ReLU())
 
         self.network = torch.nn.Sequential(*L)
         self.classifier = torch.nn.Linear(128 * 16 * 16)
