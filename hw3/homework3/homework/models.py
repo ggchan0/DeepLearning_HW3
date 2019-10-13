@@ -11,7 +11,7 @@ class CNNClassifier(nn.Module):
         L = []
         c = 6
         for l in layers:
-            L.append(torch.nn.Conv2d(c, l, kernel_size, stride=2, padding=kernel//2))
+            L.append(torch.nn.Conv2d(c, l, kernel, stride=2, padding=kernel//2))
             L.append(torch.nn.BatchNorm2d(num_features = l))
             L.append(torch.nn.ReLU())
             c = l
