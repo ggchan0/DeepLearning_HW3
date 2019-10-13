@@ -4,6 +4,7 @@ import torch.nn as nn
 
 
 class CNNClassifier(nn.Module):
+    '''
     def __init__(self):
         super(CNNClassifier, self).__init__()
         self.conv1 = nn.Conv2d(3, 36, 3, padding=1)
@@ -30,6 +31,38 @@ class CNNClassifier(nn.Module):
         #x = self.conv3(F.relu(x))
         #x = self.pool(F.relu(x))
         #x = x.view(-1, 24 * 16 * 16)
+        x = self.linear3(F.relu(x.mean(dim=[2, 3])))
+        return x
+    '''
+    def __init__(self):
+        super(CNNClassifier, self).__init__()
+        self.conv1 = nn.Conv2d(3, 32, 3, padding=1)
+        self.conv1_1 = nn.Conv2d(32, 32, 3, padding=1)
+        self.batch_1 = nn.BatchNorm2d(num_features = 32)
+        self.conv2 = nn.Conv2d(32, 64, 3, padding=1)
+        self.conv2_1 = nn.Conv2d(64, 64, 3, padding=1)
+        self.batch_2 = nn.BatchNorm2d(num_features = 64)
+        self.conv3 = nn.Conv2d(64, 128, 3, padding=1)
+        self.conv3_1 = nn.Conv2d(128, 128, 3, padding=1)
+        self.batch_3 = nn.BatchNorm2d(num_features = 128)
+        self.linear3 = nn.Linear(128, 6)
+
+    def forward(self, x):
+        x = self.conv1(x) # 36 x 64 x 64
+        x = self.batch_1(x)
+        x = self.conv1_1(F.relu(x)) # 36 x 64 x 364
+        x = self.batch_1(x)
+        x = self.pool(F.relu(x)) # 36 x 32 x 32
+        x = self.conv2(F.relu(x)) # 24 x 32 x 32
+        x = self.batch_2(x)
+        x = self.conv2_1(F.relu(x)) # 24 x 32 x 32
+        x = self.batch_2(x)
+        x = self.pool(F.relu(x)) # 24 x 16 x 16
+        x = self.conv3(F.relu(x))
+        x = self.batch_3(x)
+        x = self.conv3_1(F.relu(x))
+        x = self.batch_3(x)
+        x = F.relu(x)
         x = self.linear3(F.relu(x.mean(dim=[2, 3])))
         return x
 
