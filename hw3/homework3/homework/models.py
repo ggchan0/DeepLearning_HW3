@@ -7,6 +7,21 @@ class CNNClassifier(nn.Module):
     def __init__(self):
         super(CNNClassifier, self).__init__()
 
+        self.conv1 = torch.nn.Conv2d(3, 32, 3, padding = 1)
+        self.conv1_0 = torch.nn.Conv2d(32, 32, 3, padding = 1)
+        self.batch1 = torch.nn.BatchNorm2d(num_features = 32)
+
+        self.conv2 = torch.nn.Conv2d(32, 64, 3, padding = 1)
+        self.conv2_0 = torch.nn.Conv2d(64, 64, 3, padding = 1)
+        self.batch2 = torch.nn.BatchNorm2d(num_features = 64)
+
+        self.conv3 = torch.nn.Conv2d(64, 128, 3, padding = 1)
+        self.conv3_0 = torch.nn.Conv2d(128, 128, 3, padding = 1)
+        self.batch3 = torch.nn.BatchNorm2d(num_features = 128)
+
+        self.pool = torch.nn.MaxPool2d(kernel_size = 2)
+
+        '''
         L = []
         #3 x 64 x 64
         L.append(torch.nn.Conv2d(3, 32, 3, padding = 1))
@@ -29,21 +44,32 @@ class CNNClassifier(nn.Module):
         L.append(torch.nn.ReLU())
 
         L.append(torch.nn.MaxPool2d(kernel_size = 2))
+        '''
 
-        #128 x 16 x 16
-        L.append(torch.nn.Conv2d(64, 128, 3, padding = 1))
-        L.append(torch.nn.BatchNorm2d(num_features = 128))
-        L.append(torch.nn.ReLU())
-
-        L.append(torch.nn.Conv2d(128, 128, 3, padding = 1))
-        L.append(torch.nn.BatchNorm2d(num_features = 128))
-        L.append(torch.nn.ReLU())
-
-        self.network = torch.nn.Sequential(*L)
-        self.classifier = torch.nn.Linear(128 * 16 * 16, 6)
+        self.classifier = torch.nn.Linear(64 * 16 * 16, 6)
 
     def forward(self, x):
-        x = self.classifier(x)
+        x = self.conv1(x)
+        x = self.batch1(x)
+        x = self.conv1_0(F.relu(x))
+        x = self.batch1(x)
+
+        x = self.pool(x)
+
+        x = self.conv2(F.relu(x))
+        x = self.batch2(x)
+        x = self.conv2_0(F.relu(x))
+        x = self.batch2(x)
+
+        x = self.pool(x)
+
+        x = self.conv3(F.relu(x))
+        x = self.batch3(x)
+        x = self.conv3_0(F.relu(x))
+        x = self.batch3(x)
+
+        x = self.pool(x)
+
         x = x.view(-1, 128 * 16 * 16)
         return self.classifier(x)
 
