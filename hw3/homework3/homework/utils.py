@@ -29,8 +29,8 @@ class SuperTuxDataset(Dataset):
                 enhancer = ImageEnhance.Brightness(image_file)
                 image_file = enhancer.enhance(1.5)
                 transformations = transforms.Compose([
-                    transforms.RandomRotation(degrees=20),
-                    transforms.ColorJitter(0.5, 0.4, 0.3),
+                    transforms.RandomRotation(degrees=10),
+                    transforms.ColorJitter(0.5, 0.4, 0.4),
                     transforms.RandomHorizontalFlip(),
                     transforms.ToTensor(),
                     #transforms.Normalize([0.5, 0.5, 0.5],[0.5,0.5,0.5])
