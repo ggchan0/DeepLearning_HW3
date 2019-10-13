@@ -16,8 +16,8 @@ def train(args):
     from os import path
     model = CNNClassifier().to(device)
     loss_function = nn.CrossEntropyLoss()
-    optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
-    #optimizer = optim.Adam(model.parameters(), lr=0.001)
+    #optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
+    optimizer = optim.Adam(model.parameters(), lr=0.001)
     data_loader = load_data(TRAIN_PATH, batch_size=200)
     validation_accuracy = 0
     for epoch in range(20):
