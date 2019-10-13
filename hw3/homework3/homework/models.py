@@ -25,7 +25,7 @@ class CNNClassifier(nn.Module):
 
         self.pool = torch.nn.MaxPool2d(kernel_size = 2)
 
-        self.fc1 = torch.nn.Linear(64 * 16 * 16, 1024)
+        self.fc1 = torch.nn.Linear(16 * 16 * 16, 1024)
         self.fc2 = torch.nn.Linear(1024, 6)
 
 
