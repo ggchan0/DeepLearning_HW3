@@ -6,8 +6,6 @@ import torch.nn as nn
 class CNNClassifier(nn.Module):
     def __init__(self):
         super(CNNClassifier, self).__init__()
-        self.conv0 = nn.Conv2d(3, 48, 3, padding=1)
-        self.conv0_1 = nn.Conv2d(48, 48, 3, padding=1)
         self.conv1 = nn.Conv2d(48, 36, 3, padding=1)
         self.conv1_1 = nn.Conv2d(36, 36, 3, padding=1)
         self.conv2 = nn.Conv2d(36, 24, 3, padding=1)
