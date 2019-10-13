@@ -54,9 +54,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--log_dir')
-    parser.add_argument('--epochs', default=10)
-    parser.add_argument('--batch_size', default=200)
-    parser.add_argument('--optimizer', default="adam")
+    parser.add_argument('--epochs', type=int, default=10)
+    parser.add_argument('--batch_size', type=int, default=200)
+    parser.add_argument('--optimizer', type=str, default="adam")
     # Put custom arguments here
 
     args = parser.parse_args()
