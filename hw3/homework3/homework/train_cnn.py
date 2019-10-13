@@ -16,11 +16,14 @@ def train(args):
     from os import path
     model = CNNClassifier().to(device)
     loss_function = nn.CrossEntropyLoss()
-    #optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
-    optimizer = optim.Adam(model.parameters(), lr=0.001)
-    data_loader = load_data(TRAIN_PATH, batch_size=200)
+    optimizer = None
+    if args.optimizer == "SGD":
+        optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
+    else:
+        optimizer = optim.Adam(model.parameters(), lr=0.001)
+    data_loader = load_data(TRAIN_PATH, batch_size=args.batch_size)
     validation_accuracy = 0
-    for epoch in range(20):
+    for epoch in args.epochs:
         model.train()
         running_loss = 0.0
         for index, (inputs, labels) in enumerate(data_loader):
@@ -51,6 +54,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--log_dir')
+    parser.add_argument('--epochs', default=10)
+    parser.add_argument('--batch_size', default=200)
+    parser.add_argument('--optimizer', default="adam")
     # Put custom arguments here
 
     args = parser.parse_args()
