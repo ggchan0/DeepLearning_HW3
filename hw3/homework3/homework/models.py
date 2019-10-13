@@ -6,66 +6,32 @@ import torch.nn as nn
 class CNNClassifier(nn.Module):
     def __init__(self):
         super(CNNClassifier, self).__init__()
-
-        self.conv1 = torch.nn.Conv2d(3, 128, 3, padding = 1)
-        self.conv1_0 = torch.nn.Conv2d(128, 128, 3, padding = 1)
-        self.batch1 = torch.nn.BatchNorm2d(num_features = 128)
-
-        self.conv2 = torch.nn.Conv2d(128, 64, 3, padding = 1)
-        self.conv2_0 = torch.nn.Conv2d(64, 64, 3, padding = 1)
-        self.batch2 = torch.nn.BatchNorm2d(num_features = 64)
-
-        self.conv3 = torch.nn.Conv2d(64, 32, 3, padding = 1)
-        self.conv3_0 = torch.nn.Conv2d(32, 32, 3, padding = 1)
-        self.batch3 = torch.nn.BatchNorm2d(num_features = 32)
-
-        self.conv4 = torch.nn.Conv2d(32, 16, 3, padding = 1)
-        self.conv4_0 = torch.nn.Conv2d(16, 16, 3, padding = 1)
-        self.batch4 = torch.nn.BatchNorm2d(num_features = 16)
-
-        self.pool = torch.nn.MaxPool2d(kernel_size = 2)
-
-        self.fc1 = torch.nn.Linear(16 * 16 * 16, 1024)
-        self.fc2 = torch.nn.Linear(1024, 6)
-
-
+        self.conv1 = nn.Conv2d(3, 36, 3, padding=1)
+        self.conv1_1 = nn.Conv2d(36, 36, 3, padding=1)
+        self.conv2 = nn.Conv2d(36, 24, 3, padding=1)
+        self.conv2_1 = nn.Conv2d(24, 24, 3, padding=1)
+        self.conv3 = nn.Conv2d(24, 12, 3, padding=1)
+        self.pool = nn.MaxPool2d(2, 2)
+        self.linear1 = nn.Linear(24 * 16 * 16, 1024)
+        self.linear2 = nn.Linear(1024, 32)
+        self.linear3 = nn.Linear(32, 6)
+        self.flag = True
     def forward(self, x):
-        #128 x 64 x 64
-        x = self.conv1(x)
-        x = self.batch1(x)
-        x = self.conv1_0(F.relu(x))
-        x = self.batch1(x)
-        print(x.shape)
-
-        x = self.conv2(F.relu(x))
-        x = self.batch2(x)
-        x = self.conv2_0(F.relu(x))
-        x = self.batch2(x)
-
-        print(x.shape)
-        #64 x 32 x 32
-        x = self.pool(x)
-
-        print(x.shape)
-        x = self.conv3(F.relu(x))
-        x = self.batch3(x)
-        x = self.conv3_0(F.relu(x))
-        x = self.batch3(x)
-
-        print(x.shape)
-        x = self.conv4(F.relu(x))
-        x = self.batch4(x)
-        x = self.conv4_0(F.relu(x))
-        x = self.batch4(x)
-
-        #16 x 16 x 16
-        print(x.shape)
-        x = self.pool(x)
-
-        x = x.view(-1, 16 * 16 * 16)
-        x = self.fc1(F.relu(x))
-        x = self.fc2(F.relu(x))
+        x = self.conv1(x) # 36 x 64 x 64
+        x = self.conv1_1(F.relu(x)) # 36 x 64 x 364
+        x = self.pool(F.relu(x)) # 36 x 32 x 32
+        x = self.conv2(F.relu(x)) # 24 x 32 x 32
+        x = self.conv2_1(F.relu(x)) # 24 x 32 x 32
+        x = self.pool(F.relu(x)) # 24 x 16 x 16
+        #x = self.conv3(F.relu(x))
+        #x = self.conv3(F.relu(x))
+        #x = self.pool(F.relu(x))
+        x = x.view(-1, 24 * 16 * 16)
+        x = self.linear1(F.relu(x))
+        x = self.linear2(F.relu(x))
+        x = self.linear3(F.relu(x))
         return x
+C
 
 class FCN(torch.nn.Module):
     def __init__(self):
