@@ -32,7 +32,6 @@ class CNNClassifier(nn.Module):
         x = self.linear1(F.relu(x))
         x = self.linear2(F.relu(x))
         x = self.linear3(F.relu(x))
-        x = F.softmax(x)
         return x
 
 
