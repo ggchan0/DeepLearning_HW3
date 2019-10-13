@@ -4,6 +4,7 @@ import torch.nn as nn
 
 
 class CNNClassifier(nn.Module):
+    '''
     def __init__(self):
         super(CNNClassifier, self).__init__()
         self.conv1 = nn.Conv2d(3, 36, 3, padding=1)
@@ -37,6 +38,22 @@ class CNNClassifier(nn.Module):
         x = self.linear2(F.relu(x))
         x = self.linear3(F.relu(x))
         return x
+        '''
+
+    def __init__(self, layers=[16, 32, 64, 128], n_input_channels=3, n_output_channels=6, kernel_size=5):
+        super().__init__()
+
+        L = []
+        c = n_input_channels
+        for l in layers:
+            L.append(torch.nn.Conv2d(c, l, kernel_size, stride=2, padding=kernel_size//2))
+            L.append(torch.nn.ReLU())
+            c = l
+        self.network = torch.nn.Sequential(*L)
+        self.classifier = torch.nn.Linear(c, n_output_channels)
+
+    def forward(self, x):
+        return self.classifier(self.network(x).mean(dim=[2, 3]))
 
 class FCN(torch.nn.Module):
     def __init__(self):

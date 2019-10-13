@@ -20,7 +20,7 @@ def train(args):
     if args.optimizer == "SGD":
         optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
     else:
-        optimizer = optim.Adam(model.parameters(), lr=0.001)
+        optimizer = optim.Adam(model.parameters(), lr=0.003)
     data_loader = load_data(TRAIN_PATH, batch_size=args.batch_size)
     validation_accuracy = 0
     for epoch in range(0, args.epochs):
@@ -57,6 +57,7 @@ if __name__ == '__main__':
     parser.add_argument('--epochs', type=int, default=10)
     parser.add_argument('--batch_size', type=int, default=200)
     parser.add_argument('--optimizer', type=str, default="adam")
+    parser.add_argument('--learning-rate', type=float, default=0.001)
     # Put custom arguments here
 
     args = parser.parse_args()
