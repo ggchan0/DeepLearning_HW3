@@ -8,8 +8,10 @@ class CNNClassifier(nn.Module):
         super(CNNClassifier, self).__init__()
         self.conv1 = nn.Conv2d(3, 36, 3, padding=1)
         self.conv1_1 = nn.Conv2d(36, 36, 3, padding=1)
+        self.batch_1 = nn.BatchNorm2d(num_features = 36)
         self.conv2 = nn.Conv2d(36, 24, 3, padding=1)
         self.conv2_1 = nn.Conv2d(24, 24, 3, padding=1)
+        self.batch_2 = nn.BatchNorm2d(num_features = 24)
         self.conv3 = nn.Conv2d(24, 12, 3, padding=1)
         self.pool = nn.MaxPool2d(2, 2)
         self.linear1 = nn.Linear(24 * 16 * 16, 1024)
@@ -18,10 +20,14 @@ class CNNClassifier(nn.Module):
         self.flag = True
     def forward(self, x):
         x = self.conv1(x) # 36 x 64 x 64
+        x = self.batch_1(x)
         x = self.conv1_1(F.relu(x)) # 36 x 64 x 364
+        x = self.batch_1(x)
         x = self.pool(F.relu(x)) # 36 x 32 x 32
         x = self.conv2(F.relu(x)) # 24 x 32 x 32
+        x = self.batch_2(x)
         x = self.conv2_1(F.relu(x)) # 24 x 32 x 32
+        x = self.batch_2(x)
         x = self.pool(F.relu(x)) # 24 x 16 x 16
         #x = self.conv3(F.relu(x))
         #x = self.conv3(F.relu(x))
