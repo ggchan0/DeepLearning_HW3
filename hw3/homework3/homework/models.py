@@ -25,7 +25,7 @@ class CNNClassifier(nn.Module):
         x = self.conv2_1(F.relu(x)) # 24 x 32 x 32
         x = self.pool(F.relu(x)) # 24 x 16 x 16
         x = self.conv3(F.relu(x)) # 24 x 16 x 16
-        x = self.conv3(F.relu(x)) # 12 x 16 x 16
+        x = self.conv3_1(F.relu(x)) # 12 x 16 x 16
         x = self.pool(F.relu(x)) # 12 x 8 x 8
         x = x.view(-1, 12 * 8 * 8)
         x = self.linear1(F.relu(x))
