@@ -28,8 +28,8 @@ class CNNLayer(nn.Module):
 class CNNClassifier(nn.Module):
     def __init__(self, layers = [16, 32, 64, 128]):
         super(CNNClassifier, self).__init__()
-        #layers = [32, 64, 128]
-        layers = [32, 64, 128, 256]
+        #layers = [32, 64, 128, 256]
+        layers = [256, 128, 64, 32]
         L = []
 
         L.append(nn.Conv2d(3, layers[0], kernel_size = 7, stride = 2, padding = 7 // 2))

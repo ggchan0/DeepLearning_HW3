@@ -30,7 +30,7 @@ class SuperTuxDataset(Dataset):
                 image_file = enhancer.enhance(1.3)
                 transformations = transforms.Compose([
                     transforms.RandomRotation(degrees=10),
-                    transforms.ColorJitter(0.5, 0.4, 0.3),
+                    transforms.ColorJitter(0.3, 0.4, 0.3, 0.3),
                     transforms.RandomHorizontalFlip(),
                     transforms.RandomVerticalFlip(),
                     transforms.ToTensor(),
