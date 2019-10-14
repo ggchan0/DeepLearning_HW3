@@ -29,11 +29,11 @@ class CNNClassifier(nn.Module):
     def __init__(self, layers = [16, 32, 64, 128]):
         super(CNNClassifier, self).__init__()
         #layers = [32, 64, 128]
-        layers = [16, 32, 64, 128]
+        layers = [32, 64, 128, 256]
         L = []
 
-        L.append(nn.Conv2d(3, 16, kernel_size = 7, stride = 2, padding = 7 // 2))
-        L.append(nn.BatchNorm2d(16))
+        L.append(nn.Conv2d(3, layers[0], kernel_size = 7, stride = 2, padding = 7 // 2))
+        L.append(nn.BatchNorm2d(layers[0]))
         L.append(nn.ReLU())
         #L.append(nn.MaxPool2d(kernel_size = 3, stride = 2, padding = 1))
 
@@ -47,7 +47,6 @@ class CNNClassifier(nn.Module):
 
     def forward(self, x):
         x = self.network(x)
-        print(x.shape)
         x = x.mean(dim=[2,3])
         return self.classifier(x)
 
