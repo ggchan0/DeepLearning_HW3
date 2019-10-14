@@ -35,7 +35,7 @@ class CNNClassifier(nn.Module):
         L.append(nn.Conv2d(3, 32, kernel_size = 7, stride = 2, padding = 7 // 2))
         L.append(nn.BatchNorm2d(32))
         L.append(nn.ReLU())
-        L.append(nn.MaxPool2d(kernel_size = 3, stride = 2, padding = 1))
+        #L.append(nn.MaxPool2d(kernel_size = 3, stride = 2, padding = 1))
 
         c = layers[0]
         for l in layers:
