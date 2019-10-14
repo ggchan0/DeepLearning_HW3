@@ -30,6 +30,7 @@ class SuperTuxDataset(Dataset):
                 image_file = enhancer.enhance(1.3)
                 if transformations is None:
                     transformations = transforms.Compose([
+                        transforms.ToTensor(),
                         transforms.Normalize([0.425, 0.425, 0.425],[0.25,0.25,0.25])
                     ])
                 image_tensor = transformations(image_file)
