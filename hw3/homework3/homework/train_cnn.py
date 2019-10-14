@@ -8,7 +8,7 @@ import torch.optim as optim
 
 TRAIN_PATH = "data/train"
 VALID_PATH = "data/valid"
-EARLY_STOP = 15
+EARLY_STOP = 20
 
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
