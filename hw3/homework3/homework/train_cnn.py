@@ -35,12 +35,11 @@ def train(args):
             loss.backward()
             optimizer.step()
             running_loss += loss.item()
-        print("loss at epoch ", epoch, running_loss)
         model.eval()
         confusion = ConfusionMatrix(6)
         for img, label in load_data(VALID_PATH):
             confusion.add(model(img.to(device)).argmax(1).cpu(), label)
-        print("global accuracy: ", confusion.global_accuracy)
+        print("global accuracy: ", confusion.global_accuracy, " loss at epoch ", epoch, running_loss)
         if validation_accuracy > confusion.global_accuracy and epoch > EARLY_STOP:
             exit()
         else:

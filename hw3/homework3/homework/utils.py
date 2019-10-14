@@ -27,11 +27,12 @@ class SuperTuxDataset(Dataset):
                 image_track = row[2]
                 image_file = Image.open(dataset_path + "/" + image_file_name)
                 enhancer = ImageEnhance.Brightness(image_file)
-                image_file = enhancer.enhance(1.5)
+                image_file = enhancer.enhance(1.3)
                 transformations = transforms.Compose([
                     transforms.RandomRotation(degrees=10),
                     transforms.ColorJitter(0.5, 0.4, 0.3),
                     transforms.RandomHorizontalFlip(),
+                    transforms.RandomVerticalFlip(),
                     transforms.ToTensor(),
                     #transforms.Normalize([0.5, 0.5, 0.5],[0.5,0.5,0.5])
                     transforms.Normalize([0.425, 0.425, 0.425],[0.25,0.25,0.25])
