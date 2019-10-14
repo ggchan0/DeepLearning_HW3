@@ -30,7 +30,18 @@ def train(args):
             inputs = inputs.to(device)
             labels = labels.to(device)
             optimizer.zero_grad()
-            outputs = model(inputs)
+            transformations = transforms.Compose([
+                transforms.ToPILImage(),
+                transforms.RandomRotation(degrees=10),
+                transforms.ColorJitter(0.3, 0.4, 0.3, 0.3),
+                transforms.RandomHorizontalFlip(),
+                transforms.RandomVerticalFlip(),
+                transforms.ToTensor()
+                #transforms.Normalize([0.5, 0.5, 0.5],[0.5,0.5,0.5])
+                #transforms.Normalize([0.425, 0.425, 0.425],[0.25,0.25,0.25])
+                ])
+
+            outputs = model(transformations(inputs))
             loss = loss_function(outputs, labels)
             loss.backward()
             optimizer.step()

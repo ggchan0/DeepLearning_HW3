@@ -1,6 +1,8 @@
 import torch
 import torch.nn.functional as F
 import torch.nn as nn
+from torchvision import transforms
+
 
 class CNNLayer(nn.Module):
     def __init__(self, in_channels, out_channels, stride=1):
@@ -44,8 +46,10 @@ class CNNClassifier(nn.Module):
 
         self.network = nn.Sequential(*L)
         self.classifier = nn.Linear(c, 6)
+        self.normalize = transforms.Normalize([0.425, 0.425, 0.425],[0.25,0.25,0.25])
 
     def forward(self, x):
+        x = self.normalize(x)
         x = self.network(x)
         x = x.mean(dim=[2,3])
         return self.classifier(x)

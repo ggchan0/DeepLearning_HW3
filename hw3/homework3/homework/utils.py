@@ -29,14 +29,22 @@ class SuperTuxDataset(Dataset):
                 enhancer = ImageEnhance.Brightness(image_file)
                 image_file = enhancer.enhance(1.3)
                 transformations = transforms.Compose([
+
+                    transforms.ToTensor()
+                    ])
+                '''
+                transformations = transforms.Compose([
+
                     transforms.RandomRotation(degrees=10),
                     transforms.ColorJitter(0.3, 0.4, 0.3, 0.3),
                     transforms.RandomHorizontalFlip(),
                     transforms.RandomVerticalFlip(),
-                    transforms.ToTensor(),
+
+                    transforms.ToTensor()
                     #transforms.Normalize([0.5, 0.5, 0.5],[0.5,0.5,0.5])
-                    transforms.Normalize([0.425, 0.425, 0.425],[0.25,0.25,0.25])
+                    #transforms.Normalize([0.425, 0.425, 0.425],[0.25,0.25,0.25])
                     ])
+                '''
 
                 image_tensor = transformations(image_file)
                 self.tensor_data.append((image_tensor, image_label))
