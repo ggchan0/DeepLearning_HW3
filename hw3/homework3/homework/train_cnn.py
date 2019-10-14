@@ -2,6 +2,8 @@ from .models import CNNClassifier, save_model
 from .utils import ConfusionMatrix, load_data, LABEL_NAMES
 import torch
 import torchvision
+from torchvision import transforms
+from torchvision.transforms import functional as F
 import torch.utils.tensorboard as tb
 import torch.nn as nn
 import torch.optim as optim
@@ -51,7 +53,7 @@ def train(args):
         for img, label in load_data(VALID_PATH):
             confusion.add(model(img.to(device)).argmax(1).cpu(), label)
         print("global accuracy: ", confusion.global_accuracy, " loss at epoch ", epoch, running_loss)
-        if validation_accuracy > confusion.global_accuracy and epoch > EARLY_STOP:
+        if validation_accuracy > confusion.global_accuracy and epoch > args.early_stop:
             exit()
         else:
             validation_accuracy = confusion.global_accuracy
