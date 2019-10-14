@@ -29,11 +29,11 @@ class CNNClassifier(nn.Module):
     def __init__(self, layers = [32, 64, 128]):
         super(CNNClassifier, self).__init__()
         #layers = [32, 64, 128]
-        layers = [128, 64, 32]
+        layers = [32, 64, 128]
         L = []
 
-        L.append(nn.Conv2d(3, 128, kernel_size = 7, stride = 2, padding = 7 // 2))
-        L.append(nn.BatchNorm2d(128))
+        L.append(nn.Conv2d(3, 32, kernel_size = 7, stride = 2, padding = 7 // 2))
+        L.append(nn.BatchNorm2d(32))
         L.append(nn.ReLU())
         L.append(nn.MaxPool2d(kernel_size = 3, stride = 2, padding = 1))
 
