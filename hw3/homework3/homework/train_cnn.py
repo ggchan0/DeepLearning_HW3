@@ -58,6 +58,7 @@ if __name__ == '__main__':
     parser.add_argument('--batch_size', type=int, default=200)
     parser.add_argument('--optimizer', type=str, default="adam")
     parser.add_argument('--learning_rate', type=float, default=0.001)
+    parser.add_argument('--early_stop', type=int, default=5000)
     # Put custom arguments here
 
     args = parser.parse_args()
