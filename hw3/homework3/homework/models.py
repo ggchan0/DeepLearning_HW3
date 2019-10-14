@@ -15,7 +15,6 @@ class CNNLayer(nn.Module):
         L.append(nn.ReLU())
         L.append(nn.Conv2d(out_channels, out_channels, kernel_size = 3, stride = 1, padding = 1))
         L.append(nn.BatchNorm2d(out_channels))
-        L.append(nn.Dropout())
         L.append(nn.ReLU())
         self.network = nn.Sequential(*L)
 
@@ -26,11 +25,12 @@ class CNNLayer(nn.Module):
 class CNNClassifier(nn.Module):
     def __init__(self, layers = [32, 64, 128]):
         super(CNNClassifier, self).__init__()
-        layers = [32, 64, 128]
+        #layers = [32, 64, 128]
+        layers = [128, 64, 32]
         L = []
 
-        L.append(nn.Conv2d(3, 32, kernel_size = 7, stride = 2, padding = 7 // 2))
-        L.append(nn.BatchNorm2d(32))
+        L.append(nn.Conv2d(3, 128, kernel_size = 7, stride = 2, padding = 7 // 2))
+        L.append(nn.BatchNorm2d(128))
         L.append(nn.ReLU())
         L.append(nn.MaxPool2d(kernel_size = 3, stride = 2, padding = 1))
 
