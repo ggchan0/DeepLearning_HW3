@@ -3,10 +3,10 @@ import torch.nn.functional as F
 import torch.nn as nn
 
 class CNNLayer(nn.Module):
-    def __init__(self, in_channels, out_channels):
+    def __init__(self, in_channels, out_channels, stride=1):
         super(CNNLayer,self).__init__()
         L = []
-        L.append(nn.Conv2d(in_channels, out_channels, kernel_size = 3, stride = 1, padding = 1))
+        L.append(nn.Conv2d(in_channels, out_channels, kernel_size = 3, stride = 1, padding = 1, stride=stride))
         L.append(nn.ReLU())
         L.append(nn.Conv2d(out_channels, out_channels, kernel_size = 3, stride = 1, padding = 1))
         L.append(nn.ReLU())
@@ -28,7 +28,7 @@ class CNNClassifier(nn.Module):
 
         c = layers[0]
         for l in layers:
-            L.append(CNNLayer(c, l))
+            L.append(CNNLayer(c, l, 2))
             c = l
 
         self.network = nn.Sequential(*L)
