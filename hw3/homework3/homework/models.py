@@ -12,6 +12,9 @@ class CNNLayer(nn.Module):
         L.append(nn.Conv2d(out_channels, out_channels, kernel_size = 3, stride = 1, padding = 1))
         L.append(nn.BatchNorm2d(out_channels))
         L.append(nn.ReLU())
+        L.append(nn.Conv2d(out_channels, out_channels, kernel_size = 3, stride = 1, padding = 1))
+        L.append(nn.BatchNorm2d(out_channels))
+        L.append(nn.ReLU())
         self.network = nn.Sequential(*L)
 
     def forward(self, x):
