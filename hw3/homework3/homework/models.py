@@ -46,10 +46,8 @@ class CNNClassifier(nn.Module):
 
         self.network = nn.Sequential(*L)
         self.classifier = nn.Linear(c, 6)
-        self.normalize = transforms.Normalize([0.425, 0.425, 0.425],[0.25,0.25,0.25])
 
     def forward(self, x):
-        x = self.normalize(x)
         x = self.network(x)
         x = x.mean(dim=[2,3])
         return self.classifier(x)

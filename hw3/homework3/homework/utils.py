@@ -14,7 +14,7 @@ DENSE_LABEL_NAMES = ['background', 'kart', 'track', 'bomb/projectile', 'pickup/n
 DENSE_CLASS_DISTRIBUTION = [0.52683655, 0.02929112, 0.4352989, 0.0044619, 0.00411153]
 
 class SuperTuxDataset(Dataset):
-    def __init__(self, dataset_path):
+    def __init__(self, dataset_path, transformations=None):
         self.dataset_path = dataset_path
         csv_file_path = dataset_path + "/labels.csv"
         self.tensor_data = []
@@ -28,24 +28,10 @@ class SuperTuxDataset(Dataset):
                 image_file = Image.open(dataset_path + "/" + image_file_name)
                 enhancer = ImageEnhance.Brightness(image_file)
                 image_file = enhancer.enhance(1.3)
-                transformations = transforms.Compose([
-
-                    transforms.ToTensor()
+                if transformations is None:
+                    transformations = transforms.Compose([
+                        transforms.Normalize([0.425, 0.425, 0.425],[0.25,0.25,0.25])
                     ])
-                '''
-                transformations = transforms.Compose([
-
-                    transforms.RandomRotation(degrees=10),
-                    transforms.ColorJitter(0.3, 0.4, 0.3, 0.3),
-                    transforms.RandomHorizontalFlip(),
-                    transforms.RandomVerticalFlip(),
-
-                    transforms.ToTensor()
-                    #transforms.Normalize([0.5, 0.5, 0.5],[0.5,0.5,0.5])
-                    #transforms.Normalize([0.425, 0.425, 0.425],[0.25,0.25,0.25])
-                    ])
-                '''
-
                 image_tensor = transformations(image_file)
                 self.tensor_data.append((image_tensor, image_label))
 

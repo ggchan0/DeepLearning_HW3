@@ -14,6 +14,17 @@ EARLY_STOP = 20
 
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
+transformations = transforms.Compose([
+    transforms.RandomRotation(degrees=10),
+    transforms.ColorJitter(0.3, 0.4, 0.3, 0.3),
+    transforms.RandomHorizontalFlip(),
+    transforms.RandomVerticalFlip(),
+
+    transforms.ToTensor()
+    #transforms.Normalize([0.5, 0.5, 0.5],[0.5,0.5,0.5])
+    transforms.Normalize([0.425, 0.425, 0.425],[0.25,0.25,0.25])
+])
+
 def train(args):
     from os import path
     model = CNNClassifier().to(device)
@@ -23,7 +34,7 @@ def train(args):
         optimizer = optim.SGD(model.parameters(), lr=args.learning_rate, momentum=0.9)
     else:
         optimizer = optim.Adam(model.parameters(), lr=args.learning_rate)
-    data_loader = load_data(TRAIN_PATH, batch_size=args.batch_size)
+    data_loader = load_data(TRAIN_PATH, batch_size=args.batch_size, transformations=transformations)
     validation_accuracy = 0
     for epoch in range(0, args.epochs):
         model.train()
@@ -32,18 +43,8 @@ def train(args):
             inputs = inputs.to(device)
             labels = labels.to(device)
             optimizer.zero_grad()
-            transformations = transforms.Compose([
-                transforms.ToPILImage(),
-                transforms.RandomRotation(degrees=10),
-                transforms.ColorJitter(0.3, 0.4, 0.3, 0.3),
-                transforms.RandomHorizontalFlip(),
-                transforms.RandomVerticalFlip(),
-                transforms.ToTensor()
-                #transforms.Normalize([0.5, 0.5, 0.5],[0.5,0.5,0.5])
-                #transforms.Normalize([0.425, 0.425, 0.425],[0.25,0.25,0.25])
-                ])
 
-            outputs = model(transformations(inputs))
+            outputs = model(inputs)
             loss = loss_function(outputs, labels)
             loss.backward()
             optimizer.step()
