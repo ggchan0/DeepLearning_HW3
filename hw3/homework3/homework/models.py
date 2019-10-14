@@ -7,15 +7,18 @@ class CNNLayer(nn.Module):
         super(CNNLayer,self).__init__()
         L = []
         L.append(nn.Conv2d(in_channels, out_channels, kernel_size = 3, stride = 1, padding = 1))
+        L.append(nn.BatchNorm2d(out_channels))
+        L.append(nn.ReLU())
+        L.append(nn.Conv2d(out_channels, out_channels, kernel_size = 3, stride = 1, padding = 1))
+        L.append(nn.BatchNorm2d(out_channels))
+        L.append(nn.ReLU())
+        L.append(nn.Conv2d(out_channels, out_channels, kernel_size = 3, stride = 1, padding = 1))
+        L.append(nn.BatchNorm2d(out_channels))
+        L.append(nn.ReLU())
+        L.append(nn.Conv2d(out_channels, out_channels, kernel_size = 3, stride = 1, padding = 1))
+        L.append(nn.BatchNorm2d(out_channels))
+        L.append(nn.ReLU())
         L.append(nn.MaxPool2d(kernel_size = 3, stride = 2, padding = 1))
-        L.append(nn.BatchNorm2d(out_channels))
-        L.append(nn.ReLU())
-        L.append(nn.Conv2d(out_channels, out_channels, kernel_size = 3, stride = 1, padding = 1))
-        L.append(nn.BatchNorm2d(out_channels))
-        L.append(nn.ReLU())
-        L.append(nn.Conv2d(out_channels, out_channels, kernel_size = 3, stride = 1, padding = 1))
-        L.append(nn.BatchNorm2d(out_channels))
-        L.append(nn.ReLU())
         self.network = nn.Sequential(*L)
 
     def forward(self, x):
@@ -32,7 +35,7 @@ class CNNClassifier(nn.Module):
         L.append(nn.Conv2d(3, 128, kernel_size = 7, stride = 2, padding = 7 // 2))
         L.append(nn.BatchNorm2d(128))
         L.append(nn.ReLU())
-        #L.append(nn.MaxPool2d(kernel_size = 3, stride = 2, padding = 1))
+        L.append(nn.MaxPool2d(kernel_size = 3, stride = 2, padding = 1))
 
         c = layers[0]
         for l in layers:
