@@ -2,6 +2,7 @@ import torch
 import torch.nn.functional as F
 import torch.nn as nn
 from torchvision import transforms
+from . import dense_transforms
 
 
 class CNNLayer(nn.Module):
@@ -53,25 +54,65 @@ class CNNClassifier(nn.Module):
         return self.classifier(x)
 
 class FCN(torch.nn.Module):
-    def __init__(self):
+    class ConvLayer(nn.Module):
+        def __init__(self, in_channels, out_channels, stride=1):
+            super().__init__()
+            L = []
+            L.append(nn.Conv2d(in_channels, out_channels, kernel_size = 3, stride = 1, padding = 1))
+            L.append(nn.BatchNorm2d(out_channels))
+            L.append(nn.ReLU())
+            L.append(nn.Conv2d(out_channels, out_channels, kernel_size = 3, stride = 1, padding = 1))
+            L.append(nn.BatchNorm2d(out_channels))
+            L.append(nn.ReLU())
+            L.append(nn.MaxPool2d(kernel_size = 3, stride = 2, padding = 1))
+            self.network = nn.Sequential(*L)
+
+        def forward(self, x):
+            return self.network(x)
+
+    class TransposeLayer(nn.Module):
+        def __init__(self, in_channels, out_channels, stride=1):
+            super().__init__()
+            L = []
+            L.append(nn.ConvTranspose2d(in_channels, out_channels, kernel_size = 3, stride = 2, padding = 1, output_padding=1, dilation=1))
+            L.append(nn.BatchNorm2d(out_channels))
+            L.append(nn.ReLU())
+            self.network = nn.Sequential(*L)
+
+        def forward(self, x):
+            return self.network(x)
+
+    def __init__(self, layers=[16, 32, 64, 128], kernel_size=3):
         super(FCN, self).__init__()
-        """
-        Your code here.
-        Hint: The FCN can be a bit smaller the the CNNClassifier since you need to run it at a higher resolution
-        Hint: Use up-convolutions
-        Hint: Use skip connections
-        Hint: Use residual connections
-        Hint: Always pad by kernel_size / 2, use an odd kernel_size
-        """
-        self.conv0 = nn.Conv2d(3, 36, 5, padding = 2)
-        self.conv1 = nn.Conv2d(36, 24, 5, padding = 2)
-        self.conv2 = nn.Conv2d(24, 12, 5, padding = 2)
-        self.pool = nn.MaxPool2d(2, 2)
-        self.conv3 = nn.Conv2d(12, 24, 5, padding = 2)
-        self.conv4 = nn.Conv2d(24, 36, 5, padding = 2)
-        self.linear1 = nn.Linear(36 * 48 * 64, 1024)
-        self.linear2 = nn.Linear(1024, 256)
-        self.linear3 = nn.Linear(256, 6)
+        transforms = dense_transforms.Compose([
+            dense_transforms.Resize((96, 128)),
+            dense_transforms.RandomHorizontalFlip(),
+            dense_transforms.ColorJitter(0.3, 0.3, 0.3, 0.3),
+            dense_transforms.ToTensor(),
+            dense_transforms.Normalize([0.425, 0.425, 0.425], [0.25, 0.25, 0.25])
+        ])
+        layers = [32, 64, 128, 256]
+
+
+        L = []
+
+        L.append(nn.Conv2d(3, layers[0], kernel_size = 7, stride = 2, padding = 7 // 2))
+        L.append(nn.BatchNorm2d(layers[0]))
+        L.append(nn.ReLU())
+
+        self.start = nn.Sequential(*L)
+
+        self.conv64 = self.ConvLayer(32, 64)
+        self.conv128 = self.ConvLayer(64, 128)
+        self.conv256 = self.ConvLayer(128, 256)
+
+        self.trans256 = self.TransposeLayer(256, 128)
+        self.trans128 = self.TransposeLayer(128, 64)
+        self.trans64 = self.TransposeLayer(64, 32)
+
+        self.trans32 = self.TransposeLayer(32, 5)
+
+        self.norm = dense_transforms.Normalize([0.425, 0.425, 0.425], [0.25, 0.25, 0.25])
 
     def forward(self, x):
         """
@@ -83,17 +124,40 @@ class FCN(torch.nn.Module):
               if required (use z = z[:, :, :H, :W], where H and W are the height and width of a corresponding strided
               convolution
         """
-        out_c0 = F.relu(self.conv0(x))
-        out_c1 = F.relu(self.conv1(out_c0))
-        out_c2 = F.relu(self.conv2(out_c1))
-        out_c3 = F.relu(self.conv3(out_c2)) + out_c1
-        out_c4 = F.relu(self.conv4(out_c3)) + out_c0
-        out_pool1 = F.relu(self.pool(out_c4))
-        out_pool1 = out_pool1.view(-1, 36 * 48 * 64)
-        out_l1 = self.linear1(F.relu(out_pool1))
-        out_l2 = self.linear2(F.relu(out_l1))
-        out_l3 = self.linear3(F.relu(out_l2))
-        return out_l3
+
+
+        out_32 = None
+        out_64 = None
+        out_128 = None
+        out_256 = None
+
+        # 3 x 128 x 96
+        x = self.start(x)
+        # 32 x 64 x 48
+        out_32 = x
+
+        x = self.conv64(x)
+        # 64 x 32 x 24
+        out_64 = x
+
+        x = self.conv128(x)
+        # 128 x 16 x 12
+        out_128 = x
+
+        x = self.conv256(x)
+        # 256 x 8 x 6
+        out_256 = x
+
+        print(x.shape)
+        print(self.trans256(x).shape)
+        print(out_128.shape)
+        x = self.trans256(x) + out_128 #128 x 16 x 12
+        x = self.trans128(x) + out_64 #64 x 32 x 24
+        x = self.trans64(x) + out_32 #32 x 64 x 48
+
+        x = self.trans32(x) #6 x 128 x 96
+
+        return x
 
 
 model_factory = {

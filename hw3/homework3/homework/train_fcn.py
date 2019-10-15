@@ -11,7 +11,6 @@ import torch.optim as optim
 
 TRAIN_PATH = "dense_data/train"
 VALID_PATH = "dense_data/valid"
-EARLY_STOP = 10
 
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
@@ -23,8 +22,12 @@ def train(args):
     validation_accuracy = 0
 
     loss_function = nn.CrossEntropyLoss()
-    #optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
-    optimizer = optim.Adam(model.parameters(), lr=0.001)
+    optimizer = None
+    if args.optimizer == "SGD":
+        optimizer = optim.SGD(model.parameters(), lr=args.learning_rate, momentum=0.9)
+    else:
+        optimizer = optim.Adam(model.parameters(), lr=args.learning_rate)
+
     data_loader = load_dense_data(TRAIN_PATH, num_workers=4, batch_size=200)
 
     for epoch in range(15):
@@ -34,19 +37,14 @@ def train(args):
         for index, (inputs, labels) in enumerate(data_loader):
             inputs = inputs.to(device)
             labels = inputs.to(device)
-
-            print("input shape", inputs.shape)
-            print("label shape", labels.shape)
-            image_to_tensor = dense_transforms.ToTensor()
+            labels = labels.type(torch.LongTensor)
 
             optimizer.zero_grad()
             outputs = model(inputs)
-            loss = loss_function(outputs, labels)
+            loss = loss_function(outputs, labels.sum(1))
             loss.backward()
             optimizer.step()
             running_loss += loss.item()
-
-        print("loss at epoch ", epoch, running_loss)
 
         model.eval()
 
@@ -54,7 +52,7 @@ def train(args):
         for img, label in load_dense_data(VALID_PATH):
             confusion.add(model(img.to(device)).argmax(1).cpu(), label)
 
-        print("global accuracy: ", confusion.global_accuracy)
+        print("loss at epoch ", epoch, running_loss, "global accuracy: ", confusion.global_accuracy)
 
         if validation_accuracy > confusion.global_accuracy and epoch > EARLY_STOP:
             exit()
@@ -69,6 +67,11 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--log_dir')
+    parser.add_argument('--epochs', type=int, default=10)
+    parser.add_argument('--batch_size', type=int, default=200)
+    parser.add_argument('--optimizer', type=str, default="adam")
+    parser.add_argument('--learning_rate', type=float, default=0.001)
+    parser.add_argument('--early_stop', type=int, default=5000)
     # Put custom arguments here
 
     args = parser.parse_args()

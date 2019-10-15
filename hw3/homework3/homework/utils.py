@@ -44,7 +44,8 @@ class SuperTuxDataset(Dataset):
 
 
 class DenseSuperTuxDataset(Dataset):
-    def __init__(self, dataset_path, transform=dense_transforms.ToTensor()):
+    def __init__(self, dataset_path,
+                transform=dense_transforms.Compose([dense_transforms.ToTensor()])):
         from glob import glob
         from os import path
         self.files = []
