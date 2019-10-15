@@ -148,9 +148,6 @@ class FCN(torch.nn.Module):
         # 256 x 8 x 6
         out_256 = x
 
-        print(x.shape)
-        print(self.trans256(x).shape)
-        print(out_128.shape)
         x = self.trans256(x) + out_128 #128 x 16 x 12
         x = self.trans128(x) + out_64 #64 x 32 x 24
         x = self.trans64(x) + out_32 #32 x 64 x 48
