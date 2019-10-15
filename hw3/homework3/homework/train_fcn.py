@@ -30,7 +30,7 @@ def train(args):
 
     data_loader = load_dense_data(TRAIN_PATH, num_workers=4, batch_size=200)
 
-    for epoch in range(15):
+    for epoch in range(args.epochs):
         model.train()
         running_loss = 0.0
 
@@ -53,7 +53,7 @@ def train(args):
 
         print("loss at epoch ", epoch, running_loss, "global accuracy: ", confusion.global_accuracy)
 
-        if validation_accuracy > confusion.global_accuracy and epoch > EARLY_STOP:
+        if validation_accuracy > confusion.global_accuracy and epoch > args.early_stop:
             exit()
         else:
             validation_accuracy = confusion.global_accuracy
