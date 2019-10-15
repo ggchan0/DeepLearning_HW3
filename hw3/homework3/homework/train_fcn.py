@@ -36,8 +36,7 @@ def train(args):
 
         for index, (inputs, labels) in enumerate(data_loader):
             inputs = inputs.to(device)
-            labels = inputs.to(device)
-            labels = labels.type(torch.LongTensor)
+            labels = inputs.type(torch.LongTensor).to(device)
 
             optimizer.zero_grad()
             outputs = model(inputs)
