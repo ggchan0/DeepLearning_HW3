@@ -12,6 +12,14 @@ import torch.optim as optim
 TRAIN_PATH = "dense_data/train"
 VALID_PATH = "dense_data/valid"
 
+transforms = dense_transforms.Compose([
+    dense_transforms.Resize((96, 128)),
+    dense_transforms.RandomHorizontalFlip(),
+    dense_transforms.ColorJitter(0.3, 0.3, 0.3, 0.3),
+    dense_transforms.ToTensor(),
+    dense_transforms.Normalize([0.425, 0.425, 0.425], [0.25, 0.25, 0.25])
+])
+
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
 def train(args):
@@ -28,7 +36,7 @@ def train(args):
     else:
         optimizer = optim.Adam(model.parameters(), lr=args.learning_rate)
 
-    data_loader = load_dense_data(TRAIN_PATH, num_workers=4, batch_size=200)
+    data_loader = load_dense_data(TRAIN_PATH, num_workers=4, batch_size=200, transform=transforms)
 
     for epoch in range(args.epochs):
         model.train()
@@ -40,7 +48,7 @@ def train(args):
 
             optimizer.zero_grad()
             outputs = model(inputs)
-            loss = loss_function(outputs, labels.sum(1))
+            loss = loss_function(outputs, labels.sum(0))
             loss.backward()
             optimizer.step()
             running_loss += loss.item()

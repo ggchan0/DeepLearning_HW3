@@ -2,6 +2,7 @@ import torch
 import torch.nn.functional as F
 import torch.nn as nn
 from torchvision import transforms
+from torchvision.transforms import functional as FT
 from . import dense_transforms
 
 
@@ -84,13 +85,6 @@ class FCN(torch.nn.Module):
 
     def __init__(self, layers=[16, 32, 64, 128], kernel_size=3):
         super(FCN, self).__init__()
-        transforms = dense_transforms.Compose([
-            dense_transforms.Resize((96, 128)),
-            dense_transforms.RandomHorizontalFlip(),
-            dense_transforms.ColorJitter(0.3, 0.3, 0.3, 0.3),
-            dense_transforms.ToTensor(),
-            dense_transforms.Normalize([0.425, 0.425, 0.425], [0.25, 0.25, 0.25])
-        ])
         layers = [32, 64, 128, 256]
 
 
@@ -112,8 +106,6 @@ class FCN(torch.nn.Module):
 
         self.trans32 = self.TransposeLayer(32, 5)
 
-        self.norm = dense_transforms.Normalize([0.425, 0.425, 0.425], [0.25, 0.25, 0.25])
-
     def forward(self, x):
         """
         Your code here
@@ -125,11 +117,7 @@ class FCN(torch.nn.Module):
               convolution
         """
 
-
-        out_32 = None
-        out_64 = None
-        out_128 = None
-        out_256 = None
+        return nn.Conv2d(3, 5, kernel_size = 3, padding = 1)(x)
 
         # 3 x 128 x 96
         x = self.start(x)
@@ -155,6 +143,7 @@ class FCN(torch.nn.Module):
         x = self.trans32(x) #6 x 128 x 96
 
         return x
+
 
 
 model_factory = {

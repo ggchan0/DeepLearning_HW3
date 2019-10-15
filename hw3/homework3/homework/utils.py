@@ -45,7 +45,7 @@ class SuperTuxDataset(Dataset):
 
 class DenseSuperTuxDataset(Dataset):
     def __init__(self, dataset_path,
-                transform=dense_transforms.Compose([dense_transforms.ToTensor(), dense_transforms.Normalize([0.425, 0.425, 0.425], [0.25, 0.25, 0.25])])):
+                transform=dense_transforms.Compose([dense_transforms.ToTensor()])):
         from glob import glob
         from os import path
         self.files = []
@@ -61,7 +61,8 @@ class DenseSuperTuxDataset(Dataset):
         im = Image.open(b + '_im.jpg')
         lbl = Image.open(b + '_seg.png')
         if self.transform is not None:
-            im, lbl = self.transform(im), lbl
+            im = self.transform(im)
+        lbl = dense_transforms.ToTensor()(lbl)
         return im, lbl
 
 
